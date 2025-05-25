@@ -2,9 +2,11 @@ services:
   - type: web
     name: ecommerce-journey-optimizer
     env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: "gunicorn --bind 0.0.0.0:$PORT wsgi:app"
+    buildCommand: chmod +x start.sh
+    startCommand: ./start.sh
     envVars:
       - key: PYTHON_VERSION
         value: 3.10.0
+      - key: ANTHROPIC_API_KEY
+        sync: false
     plan: free

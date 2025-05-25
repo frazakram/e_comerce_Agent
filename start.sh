@@ -10,5 +10,9 @@ pip install -r requirements.txt
 mkdir -p uploads
 mkdir -p output
 
-# Run with gunicorn (no space between app and :app)
-exec gunicorn wsgi:app --bind 0.0.0.0:$PORT
+# Explicitly check for required files
+echo "Verifying application files..."
+ls -la
+
+# Run with gunicorn using our renamed application
+exec gunicorn wsgi:app --bind 0.0.0.0:$PORT --log-level debug

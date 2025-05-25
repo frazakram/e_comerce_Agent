@@ -1,5 +1,5 @@
 # Import the Flask application instance
-from app import app as application
+from application import app as application
 
 # For compatibility with different WSGI servers
 app = application

@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - E-commerce User Journey Optimizer{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1><i class="fas fa-tachometer-alt text-primary"></i> Analytics Dashboard</h1>
+                <div>
+                    <form action="{{ url_for('enhance_with_claude') }}" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-robot"></i> Enhance with Claude AI
+                        </button>
+                    </form>
+                    <form action="{{ url_for('generate_report') }}" method="post" class="d-inline ms-2">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-file-alt"></i> Generate Report
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- AI Insights Section -->
+            {% if has_claude_insights %}
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card insight-card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-robot"></i> Claude AI Insights</h5>
+                        </div>
+                        <div class="card-body" id="claude-insights">
+                            {{ claude_insights|replace('\n', '<br>')|safe }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Top Recommendations -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card recommendation-card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-lightbulb"></i> Top Optimization Recommendations</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if recommendations %}
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Area</th>
+                                                <th scope="col">Recommendation</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for rec in recommendations %}
+                                                {% if loop.index <= 5 %}
+                                                <tr>
+                                                    <th scope="row">{{ loop.index }}</th>
+                                                    <td><strong>{{ rec.area }}</strong></td>
+                                                    <td>{{ rec.suggestion }}</td>
+                                                </tr>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% else %}
+                                <div class="alert alert-info">
+                                    No recommendations available. Try enhancing the analysis with Claude AI.
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Visualization Row 1 -->
+            <div class="row mb-4">
+                <!-- Conversion Funnel -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-funnel-dollar"></i> Conversion Funnel</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if graphs and 'funnel' in graphs %}
+                                <div id="funnel-chart" class="chart-container"></div>
+                            {% else %}
+                                <div class="alert alert-info">No funnel data available.</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Device Analysis -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-mobile-alt"></i> Device Analysis</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if graphs and 'devices' in graphs %}
+                                <div id="devices-chart" class="chart-container"></div>
+                            {% else %}
+                                <div class="alert alert-info">No device analysis data available.</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Visualization Row 2 -->
+            <div class="row mb-4">
+                <!-- Page Exit Rates -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-door-open"></i> Page Exit Rates</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if graphs and 'exit_rates' in graphs %}
+                                <div id="exit-rates-chart" class="chart-container"></div>
+                            {% else %}
+                                <div class="alert alert-info">No exit rate data available.</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Referrer Analysis -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-external-link-alt"></i> Traffic Sources</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if graphs and 'referrers' in graphs %}
+                                <div id="referrers-chart" class="chart-container"></div>
+                            {% else %}
+                                <div class="alert alert-info">No referrer data available.</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Visualization Row 3 -->
+            <div class="row mb-4">
+                <!-- Time Spent -->
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-clock"></i> Time Spent by Page Type</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if graphs and 'time_spent' in graphs %}
+                                <div id="time-spent-chart" class="chart-container"></div>
+                            {% else %}
+                                <div class="alert alert-info">No time spent data available.</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize all charts if data is available
+        {% if graphs and 'funnel' in graphs %}
+            var funnelData = {{ graphs['funnel']|safe }};
+            Plotly.newPlot('funnel-chart', funnelData.data, funnelData.layout);
+        {% endif %}
+        
+        {% if graphs and 'devices' in graphs %}
+            var devicesData = {{ graphs['devices']|safe }};
+            Plotly.newPlot('devices-chart', devicesData.data, devicesData.layout);
+        {% endif %}
+        
+        {% if graphs and 'exit_rates' in graphs %}
+            var exitRatesData = {{ graphs['exit_rates']|safe }};
+            Plotly.newPlot('exit-rates-chart', exitRatesData.data, exitRatesData.layout);
+        {% endif %}
+        
+        {% if graphs and 'referrers' in graphs %}
+            var referrersData = {{ graphs['referrers']|safe }};
+            Plotly.newPlot('referrers-chart', referrersData.data, referrersData.layout);
+        {% endif %}
+        
+        {% if graphs and 'time_spent' in graphs %}
+            var timeSpentData = {{ graphs['time_spent']|safe }};
+            Plotly.newPlot('time-spent-chart', timeSpentData.data, timeSpentData.layout);
+        {% endif %}
+        
+        // Make charts responsive
+        window.addEventListener('resize', function() {
+            {% if graphs and 'funnel' in graphs %}
+            Plotly.relayout('funnel-chart', {
+                'xaxis.autorange': true,
+                'yaxis.autorange': true
+            });
+            {% endif %}
+            
+            {% if graphs and 'devices' in graphs %}
+            Plotly.relayout('devices-chart', {
+                'xaxis.autorange': true,
+                'yaxis.autorange': true
+            });
+            {% endif %}
+            
+            {% if graphs and 'exit_rates' in graphs %}
+            Plotly.relayout('exit-rates-chart', {
+                'xaxis.autorange': true,
+                'yaxis.autorange': true
+            });
+            {% endif %}
+            
+            {% if graphs and 'referrers' in graphs %}
+            Plotly.relayout('referrers-chart', {
+                'xaxis.autorange': true,
+                'yaxis.autorange': true
+            });
+            {% endif %}
+            
+            {% if graphs and 'time_spent' in graphs %}
+            Plotly.relayout('time-spent-chart', {
+                'xaxis.autorange': true,
+                'yaxis.autorange': true
+            });
+            {% endif %}
+        });
+    });
+</script>
+{% endblock %}

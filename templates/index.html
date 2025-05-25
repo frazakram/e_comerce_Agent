@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block title %}Home - E-commerce User Journey Optimizer{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4"><i class="fas fa-chart-line text-primary"></i> E-commerce User Journey Optimization</h1>
+            <p class="lead">Analyze your e-commerce user journey data to identify optimization opportunities and increase conversion rates.</p>
+            
+            <div class="row mt-4">
+                <!-- Generate Demo Data Card -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-database"></i> Data Generation
+                        </div>
+                        <div class="card-body">
+                            {% if db_exists %}
+                                <div class="alert alert-success" role="alert">
+                                    <i class="fas fa-check-circle"></i> Demo data already exists in the database.
+                                </div>
+                            {% endif %}
+                            <p>Generate realistic e-commerce user journey data for analysis.</p>
+                            <form action="{{ url_for('generate_data') }}" method="post">
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <label for="num_users" class="form-label">Number of Users</label>
+                                        <input type="number" class="form-control" id="num_users" name="num_users" value="200" min="10" max="1000">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="num_sessions" class="form-label">Number of Sessions</label>
+                                        <input type="number" class="form-control" id="num_sessions" name="num_sessions" value="500" min="50" max="2000">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="num_products" class="form-label">Number of Products</label>
+                                        <input type="number" class="form-control" id="num_products" name="num_products" value="50" min="10" max="200">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-database"></i> Generate Demo Data
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Run Analysis Card -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-chart-pie"></i> Analysis Options
+                        </div>
+                        <div class="card-body">
+                            {% if not db_exists %}
+                                <div class="alert alert-warning" role="alert">
+                                    <i class="fas fa-exclamation-triangle"></i> No data found. Please generate demo data first.
+                                </div>
+                            {% endif %}
+                            <p>Analyze your e-commerce data to get insights and optimization recommendations.</p>
+                            <form action="{{ url_for('analyze') }}" method="post">
+                                <button type="submit" class="btn btn-success mb-3" {% if not db_exists %}disabled{% endif %}>
+                                    <i class="fas fa-chart-pie"></i> Run Analysis
+                                </button>
+                            </form>
+                            
+                            <div class="mt-4">
+                                <h5>What this will do:</h5>
+                                <ul>
+                                    <li>Analyze user journey patterns across the shopping funnel</li>
+                                    <li>Identify conversion bottlenecks and drop-off points</li>
+                                    <li>Evaluate page effectiveness and user behavior</li>
+                                    <li>Generate data-driven optimization recommendations</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- About Section -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-info-circle"></i> About the E-commerce Optimization Agent
+                        </div>
+                        <div class="card-body">
+                            <p>This agent analyzes e-commerce user journey data to identify optimization opportunities that can improve conversion rates and enhance customer experience. The analysis includes:</p>
+                            
+                            <div class="row mt-3">
+                                <div class="col-md-4">
+                                    <div class="card h-100 border-left-primary">
+                                        <div class="card-body">
+                                            <h5><i class="fas fa-funnel-dollar text-primary"></i> Funnel Analysis</h5>
+                                            <p>Analyze the conversion funnel to identify drop-off points where users abandon their journey.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <div class="card h-100 border-left-success">
+                                        <div class="card-body">
+                                            <h5><i class="fas fa-shopping-cart text-success"></i> Cart Abandonment</h5>
+                                            <p>Understand why users abandon their shopping carts and identify ways to reduce abandonment rates.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <div class="card h-100 border-left-info">
+                                        <div class="card-body">
+                                            <h5><i class="fas fa-search text-info"></i> Search Behavior</h5>
+                                            <p>Analyze how users search for products and identify opportunities to improve search functionality.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-3">
+                                <div class="col-md-4">
+                                    <div class="card h-100 border-left-warning">
+                                        <div class="card-body">
+                                            <h5><i class="fas fa-file-alt text-warning"></i> Page Effectiveness</h5>
+                                            <p>Evaluate the effectiveness of different page types and identify areas for improvement.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <div class="card h-100 border-left-danger">
+                                        <div class="card-body">
+                                            <h5><i class="fas fa-box text-danger"></i> Product Performance</h5>
+                                            <p>Analyze how different products perform in terms of views, cart additions, and purchases.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <div class="card h-100 border-left-secondary">
+                                        <div class="card-body">
+                                            <h5><i class="fas fa-users text-secondary"></i> User Segments</h5>
+                                            <p>Identify different user segments and their behavior patterns to enable targeted optimizations.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

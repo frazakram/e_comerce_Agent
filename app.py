@@ -332,5 +332,11 @@ if __name__ == '__main__':
     app.run(debug=True, port=5002)
 else:
     # Production settings when imported by WSGI server (Gunicorn)
+    import os
     # Disable debug mode in production
     app.debug = False
+    # Get port from environment variable (Render sets this)
+    port = int(os.environ.get('PORT', 10000))
+    # Ensure directories exist in production too
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    os.makedirs(app.config['OUTPUT_FOLDER'], exist_ok=True)
